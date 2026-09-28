@@ -48,9 +48,9 @@ export interface AlertAction {
 }
 
 const toneClass = {
-  primary: "bg-slate-900 text-white hover:bg-slate-700",
+  primary: "bg-ink text-on-ink hover:opacity-85",
   danger: "bg-red-600 text-white hover:bg-red-700",
-  neutral: "bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100",
+  neutral: "bg-surface text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100",
 };
 
 export function Button({ tone = "neutral", className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { tone?: keyof typeof toneClass }) {
@@ -123,7 +123,7 @@ export function RiskAlert({
             <ul className="space-y-1 text-sm">
               {positive.map((s) => (
                 <li key={s.id} className="flex gap-2">
-                  <span className="mt-0.5 shrink-0 rounded bg-white/70 px-1.5 text-xs font-semibold tabular-nums text-slate-600 ring-1 ring-slate-200">
+                  <span className="mt-0.5 shrink-0 rounded bg-surface/70 px-1.5 text-xs font-semibold tabular-nums text-slate-600 ring-1 ring-slate-200">
                     +{s.points}
                   </span>
                   <div className="min-w-0">
@@ -136,7 +136,7 @@ export function RiskAlert({
               ))}
               {mitigating.map((s) => (
                 <li key={s.id} className="flex gap-2 text-slate-500">
-                  <span className="mt-0.5 shrink-0 rounded bg-white/70 px-1.5 text-xs font-semibold tabular-nums ring-1 ring-slate-200">
+                  <span className="mt-0.5 shrink-0 rounded bg-surface/70 px-1.5 text-xs font-semibold tabular-nums ring-1 ring-slate-200">
                     {s.points}
                   </span>
                   <span>{s.reason}</span>
@@ -144,7 +144,7 @@ export function RiskAlert({
               ))}
             </ul>
           </div>
-          <div className="mt-3 rounded-lg bg-white/70 p-2 text-sm ring-1 ring-slate-200">
+          <div className="mt-3 rounded-lg bg-surface/70 p-2 text-sm ring-1 ring-slate-200">
             <span className="font-semibold">Recommended: </span>
             {a.recommendedAction}
           </div>
@@ -170,8 +170,28 @@ export function RiskAlert({
   );
 }
 
+/** Two-step button for destructive actions (browser confirm() dialogs aren't available everywhere). */
+export function ConfirmButton({ label, question, confirmLabel, onConfirm, disabled, tone = "neutral" }: { label: string; question: string; confirmLabel: string; onConfirm: () => void; disabled?: boolean; tone?: keyof typeof toneClass }) {
+  const [asking, setAsking] = useState(false);
+  if (!asking)
+    return (
+      <Button tone={tone} disabled={disabled} onClick={() => setAsking(true)}>
+        {label}
+      </Button>
+    );
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2">
+      <span className="text-sm text-slate-700">{question}</span>
+      <Button tone="danger" onClick={() => { setAsking(false); onConfirm(); }}>
+        {confirmLabel}
+      </Button>
+      <Button onClick={() => setAsking(false)}>Cancel</Button>
+    </span>
+  );
+}
+
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 ${className}`}>{children}</div>;
+  return <div className={`rounded-2xl bg-surface p-4 shadow-sm ring-1 ring-slate-200 ${className}`}>{children}</div>;
 }
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
@@ -185,10 +205,10 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 }
 
 export const selectClass =
-  "rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200";
+  "rounded-lg border border-slate-300 bg-surface px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200";
 
 export const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200";
+  "w-full rounded-lg border border-slate-300 bg-surface px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200";
 
 export function formatTime(iso: string): string {
   const d = new Date(iso);

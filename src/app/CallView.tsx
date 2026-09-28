@@ -74,7 +74,7 @@ export default function CallView() {
 
 function IdlePhone() {
   return (
-    <div className="mx-auto flex h-[37rem] w-full max-w-[22rem] items-center justify-center rounded-[2.5rem] bg-slate-900 p-6 text-center text-sm text-slate-400 ring-8 ring-slate-800">
+    <div className="mx-auto flex h-[37rem] w-full max-w-[22rem] items-center justify-center rounded-[2.5rem] bg-[#0f172a] p-6 text-center text-sm text-[#94a3b8] ring-8 ring-[#1e293b]">
       Pick a sample call to see the pre-call warning screen.
     </div>
   );
@@ -93,11 +93,11 @@ function CallScreen({ call, a, onEnd }: { call: CallInput; a: RiskAssessment; on
   };
 
   return (
-    <div className="mx-auto flex h-[37rem] w-full max-w-[22rem] flex-col rounded-[2.5rem] bg-gradient-to-b from-slate-800 to-slate-950 p-5 text-white ring-8 ring-slate-800">
+    <div className="mx-auto flex h-[37rem] w-full max-w-[22rem] flex-col rounded-[2.5rem] bg-gradient-to-b from-[#1e293b] to-[#020617] p-5 text-white ring-8 ring-[#1e293b]">
       <div className="mt-4 text-center">
-        <div className="text-xs uppercase tracking-widest text-slate-400">Incoming call</div>
+        <div className="text-xs uppercase tracking-widest text-[#94a3b8]">Incoming call</div>
         <div className="mt-2 text-2xl font-semibold">{call.callerName ?? "Unknown"}</div>
-        <div className="text-sm text-slate-300">{call.from}</div>
+        <div className="text-sm text-[#cbd5e1]">{call.from}</div>
       </div>
 
       <div className="mt-5 flex-1 overflow-y-auto">
@@ -118,7 +118,7 @@ function CallScreen({ call, a, onEnd }: { call: CallInput; a: RiskAssessment; on
             <p className="mt-2 text-xs text-slate-700">{a.recommendedAction}</p>
           </div>
         ) : (
-          <div className="rounded-2xl bg-white/10 p-3 text-center text-sm text-emerald-300">
+          <div className="rounded-2xl bg-white/10 p-3 text-center text-sm text-[#6ee7b7]">
             ✓ {a.signals.find((s) => s.id === "trusted")?.reason ?? "No red flags detected"}
           </div>
         )}
@@ -129,7 +129,7 @@ function CallScreen({ call, a, onEnd }: { call: CallInput; a: RiskAssessment; on
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-xl">✕</span>Decline
         </button>
         <button onClick={() => act("blocked")} className="flex flex-col items-center gap-1">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-600 text-xl">⦸</span>Block
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#475569] text-xl">⦸</span>Block
         </button>
         <button onClick={() => act("answered")} className="flex flex-col items-center gap-1">
           <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-xl">✆</span>Answer

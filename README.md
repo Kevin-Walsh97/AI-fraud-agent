@@ -11,6 +11,7 @@ npm install
 npm run dev        # http://localhost:5173
 npm test           # engine + CSV unit tests (vitest)
 npm run build      # typecheck + production build
+npm run build:artifact  # single-file HTML in dist-artifact/ for hosting as a web page
 ```
 
 On first launch you go through onboarding. Afterwards:

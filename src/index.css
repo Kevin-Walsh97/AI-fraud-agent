@@ -1,7 +1,101 @@
 @import "tailwindcss";
 
+/*
+ * Theme tokens. Components use Tailwind's slate/red/amber/emerald/blue
+ * utilities plus three semantic tokens (surface, ink, on-ink). Dark mode
+ * redefines the underlying variables, so no component needs dark: variants.
+ */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-surface: #ffffff;
+  --color-ink: #0f172a;
+  --color-on-ink: #ffffff;
 }
 
-html, body, #root { min-height: 100%; }
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    background: var(--color-slate-50);
+    color: var(--color-slate-900);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-surface: #121a2b;
+    --color-ink: #e2e8f0;
+    --color-on-ink: #0b1120;
+
+    --color-slate-50: #0b1120;
+    --color-slate-100: #1a2234;
+    --color-slate-200: #263045;
+    --color-slate-300: #3a4660;
+    --color-slate-400: #64748b;
+    --color-slate-500: #8391a7;
+    --color-slate-600: #a3b0c2;
+    --color-slate-700: #c3cddb;
+    --color-slate-800: #dde3ec;
+    --color-slate-900: #eef2f7;
+    --color-slate-950: #f8fafc;
+
+    --color-red-50: #331216;
+    --color-red-100: #4a161b;
+    --color-red-300: #7f1d1d;
+    --color-red-800: #fecaca;
+    --color-amber-50: #33260b;
+    --color-amber-100: #4a360d;
+    --color-amber-300: #7a5710;
+    --color-amber-700: #fcd34d;
+    --color-amber-900: #fde68a;
+    --color-emerald-50: #0b2a20;
+    --color-emerald-100: #0f3a2b;
+    --color-emerald-200: #14532d;
+    --color-emerald-300: #6ee7b7;
+    --color-emerald-700: #6ee7b7;
+    --color-emerald-800: #a7f3d0;
+    --color-blue-50: #172554;
+    --color-blue-700: #bfdbfe;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-surface: #121a2b;
+  --color-ink: #e2e8f0;
+  --color-on-ink: #0b1120;
+
+  --color-slate-50: #0b1120;
+  --color-slate-100: #1a2234;
+  --color-slate-200: #263045;
+  --color-slate-300: #3a4660;
+  --color-slate-400: #64748b;
+  --color-slate-500: #8391a7;
+  --color-slate-600: #a3b0c2;
+  --color-slate-700: #c3cddb;
+  --color-slate-800: #dde3ec;
+  --color-slate-900: #eef2f7;
+  --color-slate-950: #f8fafc;
+
+  --color-red-50: #331216;
+  --color-red-100: #4a161b;
+  --color-red-300: #7f1d1d;
+  --color-red-800: #fecaca;
+  --color-amber-50: #33260b;
+  --color-amber-100: #4a360d;
+  --color-amber-300: #7a5710;
+  --color-amber-700: #fcd34d;
+  --color-amber-900: #fde68a;
+  --color-emerald-50: #0b2a20;
+  --color-emerald-100: #0f3a2b;
+  --color-emerald-200: #14532d;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-700: #6ee7b7;
+  --color-emerald-800: #a7f3d0;
+  --color-blue-50: #172554;
+  --color-blue-700: #bfdbfe;
+}

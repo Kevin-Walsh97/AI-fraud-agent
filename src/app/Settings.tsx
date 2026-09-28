@@ -1,7 +1,7 @@
 import { SAMPLE_CONTACTS } from "../data/samples";
 import { ChannelToggles, NotificationPicker, SensitivityPicker, TrustedList } from "./SettingsControls";
 import { useStore } from "./store";
-import { Button, Card, Field, inputClass } from "./ui";
+import { Button, Card, ConfirmButton, Field, inputClass } from "./ui";
 
 export default function Settings() {
   const settings = useStore((s) => s.settings);
@@ -76,14 +76,7 @@ export default function Settings() {
           </div>
         )}
         <div className="mt-5 border-t border-slate-100 pt-4">
-          <Button
-            tone="danger"
-            onClick={() => {
-              if (confirm("Erase all settings and history and restart onboarding?")) resetAll();
-            }}
-          >
-            Erase all data
-          </Button>
+          <ConfirmButton tone="danger" label="Erase all data" question="Erase settings and history, and restart onboarding?" confirmLabel="Erase" onConfirm={resetAll} />
         </div>
       </Card>
     </div>

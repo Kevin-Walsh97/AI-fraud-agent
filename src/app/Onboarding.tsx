@@ -22,13 +22,13 @@ export default function Onboarding() {
     <div className="mx-auto max-w-xl px-4 py-10">
       <div className="mb-6 flex items-center gap-2">
         {STEPS.map((s, i) => (
-          <div key={s} className={`h-1.5 flex-1 rounded-full ${i <= step ? "bg-slate-900" : "bg-slate-200"}`} title={s} />
+          <div key={s} className={`h-1.5 flex-1 rounded-full ${i <= step ? "bg-ink" : "bg-slate-200"}`} title={s} />
         ))}
       </div>
       <Card className="p-6">
         {step === 0 && (
           <div className="text-center">
-            <ShieldIcon className="mx-auto h-14 w-14 text-slate-900" />
+            <ShieldIcon className="mx-auto h-14 w-14 text-ink" />
             <h1 className="mt-4 text-2xl font-bold">Welcome to ScamShield</h1>
             <p className="mt-2 text-slate-600">
               We check your texts, emails and incoming calls for signs of fraud and show you a risk score with the reasons behind it.

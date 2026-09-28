@@ -15,7 +15,13 @@ interface Sealed {
 }
 
 const memory = new Map<string, string>();
-const db = typeof indexedDB !== "undefined" ? createStore("scamshield", "vault") : null;
+const db = (() => {
+  try {
+    return typeof indexedDB !== "undefined" ? createStore("scamshield", "vault") : null;
+  } catch {
+    return null; // storage access denied (sandboxed frame, blocked site data)
+  }
+})();
 let keyPromise: Promise<CryptoKey> | null = null;
 
 function getKey(): Promise<CryptoKey> {
@@ -42,13 +48,13 @@ async function available(): Promise<boolean> {
 export const secureStorage: StateStorage = {
   async getItem(name) {
     if (!(await available())) return memory.get(name) ?? null;
-    const sealed = await get<Sealed>(name, db!);
-    if (!sealed) return null;
     try {
+      const sealed = await get<Sealed>(name, db!);
+      if (!sealed) return memory.get(name) ?? null;
       const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: sealed.iv }, await getKey(), sealed.data);
       return new TextDecoder().decode(plain);
     } catch {
-      return null; // key rotated or data corrupted — start fresh
+      return memory.get(name) ?? null; // storage blocked, or key rotated / data corrupted — start fresh
     }
   },
   async setItem(name, value) {
@@ -56,12 +62,20 @@ export const secureStorage: StateStorage = {
       memory.set(name, value);
       return;
     }
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const data = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await getKey(), new TextEncoder().encode(value));
-    await set(name, { iv, data } satisfies Sealed, db!);
+    try {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const data = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await getKey(), new TextEncoder().encode(value));
+      await set(name, { iv, data } satisfies Sealed, db!);
+    } catch {
+      memory.set(name, value);
+    }
   },
   async removeItem(name) {
     memory.delete(name);
-    if (db) await del(name, db);
+    try {
+      if (db) await del(name, db);
+    } catch {
+      /* nothing persisted */
+    }
   },
 };

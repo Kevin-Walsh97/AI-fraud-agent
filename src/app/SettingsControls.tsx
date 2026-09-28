@@ -52,7 +52,7 @@ export function SensitivityPicker({ value, onChange }: { value: Sensitivity; onC
           key={s}
           type="button"
           onClick={() => onChange(s)}
-          className={`rounded-xl p-3 text-left ring-1 ${value === s ? "bg-slate-900 text-white ring-slate-900" : "ring-slate-200 hover:bg-slate-50"}`}
+          className={`rounded-xl p-3 text-left ring-1 ${value === s ? "bg-ink text-on-ink ring-ink" : "ring-slate-200 hover:bg-slate-50"}`}
         >
           <span className="block font-medium capitalize">{s}</span>
           <span className={`block text-xs ${value === s ? "text-slate-300" : "text-slate-500"}`}>{SENSITIVITY_INFO[s]}</span>
@@ -77,7 +77,7 @@ export function NotificationPicker({ value, onChange }: { value: NotificationMod
           key={n.v}
           type="button"
           onClick={() => onChange(n.v)}
-          className={`rounded-lg px-3 py-1.5 text-sm ${value === n.v ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+          className={`rounded-lg px-3 py-1.5 text-sm ${value === n.v ? "bg-ink text-on-ink" : "text-slate-600 hover:bg-slate-100"}`}
         >
           {n.label}
         </button>

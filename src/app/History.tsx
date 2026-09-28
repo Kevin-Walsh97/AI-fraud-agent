@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import type { Channel, RiskLevel } from "../engine";
 import { toCsv } from "./csv";
-import { useStore, type AlertRecord } from "./store";
-import { actionLabels, Button, Card, formatTime, ScoreBadge, selectClass } from "./ui";
+import { useStore } from "./store";
+import { actionLabels, Button, Card, ConfirmButton, formatTime, inputClass, ScoreBadge, selectClass } from "./ui";
 
 const CHANNEL_LABEL: Record<Channel, string> = { sms: "SMS", email: "Email", call: "Call" };
 
@@ -13,6 +13,7 @@ export default function History() {
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [range, setRange] = useState<"all" | "7" | "30">("all");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [showCsv, setShowCsv] = useState(false);
 
   const rows = useMemo(() => {
     const since = range === "all" ? 0 : Date.now() - Number(range) * 86_400_000;
@@ -45,19 +46,14 @@ export default function History() {
             <option value="7">Last 7 days</option>
             <option value="30">Last 30 days</option>
           </select>
-          <Button tone="primary" onClick={() => downloadCsv(rows)} disabled={rows.length === 0}>
-            Export CSV
+          <Button tone="primary" onClick={() => setShowCsv((v) => !v)} disabled={rows.length === 0}>
+            {showCsv ? "Hide CSV" : "Export CSV"}
           </Button>
-          <Button
-            onClick={() => {
-              if (confirm("Delete all alert history from this device?")) clearHistory();
-            }}
-            disabled={alerts.length === 0}
-          >
-            Clear
-          </Button>
+          <ConfirmButton label="Clear" question="Delete all alert history?" confirmLabel="Delete" onConfirm={clearHistory} disabled={alerts.length === 0} />
         </div>
       </div>
+
+      {showCsv && rows.length > 0 && <CsvPanel csv={toCsv(rows)} />}
 
       {rows.length === 0 ? (
         <p className="py-10 text-center text-sm text-slate-500">No flagged items match these filters.</p>
@@ -92,8 +88,38 @@ export default function History() {
   );
 }
 
-function downloadCsv(rows: AlertRecord[]) {
-  const blob = new Blob([toCsv(rows)], { type: "text/csv;charset=utf-8" });
+function CsvPanel({ csv }: { csv: string }) {
+  const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
+  const canDownload = (() => {
+    try {
+      return window.self === window.top; // embedded viewers block downloads
+    } catch {
+      return false;
+    }
+  })();
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(csv);
+      setCopied("copied");
+    } catch {
+      setCopied("failed");
+    }
+  };
+  return (
+    <div className="mb-4 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <span className="text-sm font-medium">CSV ({csv.split("\r\n").length - 1} rows)</span>
+        <Button onClick={copy}>{copied === "copied" ? "Copied" : "Copy CSV"}</Button>
+        {canDownload && <Button onClick={() => downloadCsv(csv)}>Download .csv</Button>}
+        {copied === "failed" && <span className="text-xs text-slate-500">Copy was blocked. Select the text below and copy it manually.</span>}
+      </div>
+      <textarea id="csv-export" readOnly className={`${inputClass} h-32 font-mono text-xs`} value={csv} onFocus={(e) => e.currentTarget.select()} />
+    </div>
+  );
+}
+
+function downloadCsv(csv: string) {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
